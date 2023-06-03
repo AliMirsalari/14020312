@@ -82,7 +82,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean isUsernameAvailable(String username) throws SQLException {
+    public boolean isUsernameUnavailable(String username) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT username FROM users_tb WHERE username = ?;");
         preparedStatement.setString(1, username);
         preparedStatement.executeQuery();
@@ -104,7 +104,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean isEmailAvailable(String email) throws SQLException {
+    public boolean isEmailUnavailable(String email) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT email FROM users_tb WHERE email = ?;");
         preparedStatement.setString(1, email);
         preparedStatement.executeQuery();
@@ -122,5 +122,23 @@ public class UserRepositoryImpl implements UserRepository {
         preparedStatement.close();
         connection.close();
         return result;
+    }
+
+    @Override
+    public boolean isPasswordCurrect (String username , String password) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM users_tb WHERE username = ? AND password = ?;");
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, password);
+        preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.getResultSet();
+
+        boolean result  = false;
+
+        if (resultSet.next() && resultSet.getInt(1) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

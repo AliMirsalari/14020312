@@ -8,6 +8,7 @@ public interface UserService {
     User[] loadAll();
 
     void remove(int userId);
-    boolean isUsernameAvailable(String username);
-    boolean isEmailAvailable(String email);
+    boolean isUsernameUnavailable(String username);
+    boolean isEmailUnavailable(String email);
+    public boolean isPasswordCurrect (String username , String password);
 }

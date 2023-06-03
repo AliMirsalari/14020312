@@ -54,9 +54,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUsernameAvailable(String username) {
+    public boolean isUsernameUnavailable(String username) {
         try {
-            return userRepository.isUsernameAvailable(username);
+            return userRepository.isUsernameUnavailable(username);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -64,9 +64,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isEmailAvailable(String email) {
+    public boolean isEmailUnavailable(String email) {
         try {
-            return userRepository.isEmailAvailable(email);
+            return userRepository.isEmailUnavailable(email);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean isPasswordCurrect(String username, String password) {
+        try {
+            return userRepository.isPasswordCurrect(username , password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -9,8 +9,10 @@ public interface UserRepository{
     User load(int userId) throws SQLException;
     User[] loadAll() throws SQLException;
     void remove(int userId) throws SQLException;
-    boolean isUsernameAvailable(String username) throws SQLException;
-    boolean isEmailAvailable(String email) throws SQLException;
+    boolean isUsernameUnavailable(String username) throws SQLException;
+    boolean isEmailUnavailable(String email) throws SQLException;
+
+    public boolean isPasswordCurrect (String Username , String password)throws SQLException;
 
 
 
