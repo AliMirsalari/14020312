@@ -15,8 +15,7 @@ public class ApplicationContext {
     private static UserService userService;
 
     static {
-            connection = new MyConnection().getConnection();
-            userRepository = new UserRepositoryImpl(connection);
+            userRepository = new UserRepositoryImpl(new MyConnection());
             userService = new UserServiceImpl(userRepository);
     }
 

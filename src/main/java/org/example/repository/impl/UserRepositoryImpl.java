@@ -8,14 +8,16 @@ import java.sql.*;
 
 public class UserRepositoryImpl implements UserRepository {
 
-    private Connection connection;
+    private MyConnection myConnection;
 
-    public UserRepositoryImpl(Connection connection) {
-        this.connection = connection;
+
+    public UserRepositoryImpl(MyConnection connection) {
+        this.myConnection = connection;
     }
 
     @Override
     public void save(User user) throws SQLException {
+        Connection connection = myConnection.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users_tb(nat_code, first_name, last_name, username, password, email) values (?,?,?,?,?,?) returning user_id;");
         preparedStatement.setString(1, user.getNatCode());
         preparedStatement.setString(2, user.getFirstName());
@@ -36,6 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User load(int userId) throws SQLException {
+        Connection connection = myConnection.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users_tb WHERE user_id = ?;");
         preparedStatement.setInt(1, userId);
         preparedStatement.executeQuery();
@@ -52,6 +55,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User[] loadAll() throws SQLException {
+        Connection connection = myConnection.getConnection();
         Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         statement.execute("SELECT * FROM users_tb ;");
         ResultSet resultSet = statement.getResultSet();
@@ -74,6 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void remove(int userId) throws SQLException {
+        Connection connection = myConnection.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users_tb WHERE user_id =?;");
         preparedStatement.setInt(1, userId);
         preparedStatement.execute();
@@ -83,6 +88,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean isUsernameUnavailable(String username) throws SQLException {
+        Connection connection = myConnection.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT username FROM users_tb WHERE username = ?;");
         preparedStatement.setString(1, username);
         preparedStatement.executeQuery();
@@ -105,6 +111,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean isEmailUnavailable(String email) throws SQLException {
+        Connection connection = myConnection.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT email FROM users_tb WHERE email = ?;");
         preparedStatement.setString(1, email);
         preparedStatement.executeQuery();
@@ -126,6 +133,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean isPasswordCurrect (String username , String password) throws SQLException{
+        Connection connection = myConnection.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM users_tb WHERE username = ? AND password = ?;");
         preparedStatement.setString(1, username);
         preparedStatement.setString(2, password);
@@ -135,10 +143,11 @@ public class UserRepositoryImpl implements UserRepository {
         boolean result  = false;
 
         if (resultSet.next() && resultSet.getInt(1) > 0) {
+            connection.close();
             return true;
         } else {
+            connection.close();
             return false;
         }
-
     }
 }
